@@ -3,27 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <title>JMO2024yo-10</title>
     <style>
-        canvas {
-            border: 4px solid #000;
+        body {
+            padding: 10px;
         }
-        label {
-            display: block;
+        p {
             margin-bottom: 5px;
+        }
+        #github-link {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
-    <label for="rowsInput">Rows:</label>
-    <input type="number" id="rowsInput" min="1" value="10">
-    <label for="colsInput">Columns:</label>
-    <input type="number" id="colsInput" min="1" value="10">
-    <br><br>
-    <canvas id="gridCanvas"></canvas>
-
+    <div class="row">
+        <div class="col-md-3">
+            <h2>JMO2024yo-10 Simulator</h2>
+            <p>Problem: <a href="https://www.imojp.org/archive/mo2024/problems/jmo34yqa.pdf" target="_blank" rel="noopener noreferrer" style="color: blue;">JMO2024yo-10</a></p>
+            <p>Rows: <input type="number" id="rowsInput" min="1" value="10"></p>
+            <p>Columns: <input type="number" id="colsInput" min="1" value="10"></p>
+        </div>
+        <div class="col-md-9">
+            <p style="font-weight: bold;">簡単な解説</p>
+            <ul>
+                <li>隣り合う2マスの文字が同じ辺を<span style="font-weight: bold; color: orange;">"良い辺"</span>, 異なる辺を<span style="font-weight: bold; color: purple;">"悪い辺"</span>と呼ぶことにする. </li>
+                <li><span style="font-weight: bold; color: orange;">"良い辺"</span>が存在する時，その辺と同一直線上にある全ての辺は<span style="font-weight: bold; color: orange;">"良い辺"</span>である．</li>
+                <ul>
+                    <li>これは問題文の条件1, 条件2から確認できる. </li>
+                </ul>
+                <li>4つの辺の端点となる頂点について、それらが全て<span style="font-weight: bold; color: purple;">"悪い辺"</span>の時，その頂点の右上と左下のマスの文字は同じである. </li>
+                <ul>
+                    <li>これは問題文の条件2, 条件3から確認できる. </li>
+                </ul>
+                <li>以上を踏まえ、一番左上のマスを<span style="font-weight: bold;">J</span>, そこから一度だけ<span style="font-weight: bold; color: purple;">"悪い辺"</span>を跨いだマスを<span style="font-weight: bold;">M</span>とする. </li>
+                <li>この時, <span style="font-weight: bold; color: purple;">"悪い辺"</span>を黒く塗ると以下の図のようになる(辺をクリックすることで<span style="font-weight: bold;">良し悪し</span>を反転できる). </li>
+                <li>問題自体は簡単なので計算は頑張ってください. この図があればよりイメージしやすいと思います. </li>
+            </ul>
+        </div>
+    </div>
+    <a href="https://github.com/stranger86952" id="github-link" target="_blank" rel="noopener noreferrer">My GitHub</a>
+    <canvas id="gridCanvas" style="border: 4px solid #000;"></canvas>
     <script>
-        // 汚いコードだね！
+        // 汚いコードだね！！！！
         // 初期設定
         var canvas = document.getElementById("gridCanvas");
         var ctx = canvas.getContext("2d");
@@ -54,14 +84,14 @@
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
 
-            // 横の辺を描画1
+            // 全ての横の辺に性善説を適用
             for (let i = 0; i < rows - 1; i++) {
                 for (let j = 0; j < cols; j++) {
                     ctx.fillStyle = "white";
                     ctx.fillRect(j * cellSize, (i + 1) * cellSize - 2, cellSize, 4);
                 }
             }
-            // 縦の辺を描画1
+            // 全ての縦の辺に性善説を適用
             for (let i = 0; i < rows; i++) {
                 for (let j = 0; j < cols - 1; j++) {
                     ctx.fillStyle = "white";
@@ -69,7 +99,7 @@
                 }
             }
 
-            // マス
+            // マスを良い感じにする
             for (let i = 0; i < rows; i++){
                 let countHorizontal = 0;
                 for (let i2 = 0; i2 < i; i2++) {
@@ -105,7 +135,7 @@
                 }
             }
 
-            // 横の辺を描画2
+            // 成長過程で歪んだ横辺を黒くする
             for (let i = 0; i < rows - 1; i++) {
                 for (let j = 0; j < cols; j++) {
                     if(!(horizontalEdges[i][j])){
@@ -114,7 +144,7 @@
                     }
                 }
             }
-            // 縦の辺を描画2
+            // 成長過程で歪んだ縦辺を黒くする
             for (let i = 0; i < rows; i++) {
                 for (let j = 0; j < cols - 1; j++) {
                     if(!(verticalEdges[i][j])){
